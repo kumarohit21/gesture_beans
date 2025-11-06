@@ -1,0 +1,95 @@
+Prompt for Cursor (copy & paste)
+# ===============================
+# Project Prompt: Raspberry Pi 4B Sign Language Recognition
+# ===============================
+
+project_title: "Raspberry Pi Sign Language Recognition using MediaPipe + TensorFlow Lite"
+
+goals:
+  - Build a lightweight, real-time sign language recognition system optimized for Raspberry Pi 4B.
+  - Use the Pi Camera to capture frames in real time.
+  - Use MediaPipe to extract hand landmarks from frames.
+  - Train a small neural network model on a PC/laptop (TensorFlow or PyTorch).
+  - Export the trained model as TensorFlow Lite (.tflite).
+  - Run inference on Raspberry Pi using OpenCV, MediaPipe, and TensorFlow Lite runtime.
+  - Display live camera feed with recognized word labels overlayed.
+
+requirements:
+  - Must use **Python 3.9+**.
+  - Must use **MediaPipe Hands** (not Holistic) for speed.
+  - Must support **single-hand gesture classification** initially.
+  - Model training done **off-device**; inference runs **on Raspberry Pi 4B**.
+  - Inference engine: **TensorFlow Lite runtime** (not full TensorFlow).
+  - Must support **model quantization (int8/float16)** for faster inference.
+  - Must support **live camera feed** using `cv2.VideoCapture` or `Picamera2`.
+  - Must include fallback handling if no hand is detected.
+  - Output should display recognized label and confidence score on video stream.
+
+frameworks:
+  - mediapipe
+  - tensorflow / tensorflow-lite-runtime
+  - opencv-python
+  - numpy
+
+performance_targets:
+  - ≥15 FPS on Raspberry Pi 4B.
+  - CPU-only inference.
+  - Model size < 5 MB.
+  - Latency per frame < 100ms.
+
+recommended_file_structure:
+  - `dataset_preparation/`
+      - `extract_landmarks.py` → Extract MediaPipe landmarks from labeled videos.
+  - `training/`
+      - `train_model.py` → Train MLP or LSTM model on landmarks.
+      - `convert_to_tflite.py` → Convert and quantize to .tflite.
+  - `raspberry_pi_inference/`
+      - `run_inference.py` → Load camera, run MediaPipe, classify signs.
+  - `models/`
+      - `sign_model.tflite`
+  - `labels.txt` → List of gesture labels.
+
+cursor_rules:
+  - Always favor **readable, modular Python code**.
+  - When generating code, assume training is done on PC and inference on Raspberry Pi.
+  - All scripts should include clear comments and minimal dependencies.
+  - Avoid heavy frameworks (no PyTorch inference on Pi).
+  - Use CPU-only TensorFlow Lite interpreter.
+  - Prefer `mediapipe.solutions.hands` over `holistic` for speed.
+  - Always normalize landmark coordinates per frame.
+  - For inference, if no hand detected, skip classification for that frame.
+  - Model should take 63 features per frame (21 landmarks × 3 coords).
+  - For training, include data augmentation functions: add noise, random shift, and scaling.
+  - Use `argparse` for any CLI utilities.
+  - Ensure all generated scripts can run on **Raspberry Pi OS Bullseye** without extra configuration.
+
+cursor_objective_instruction:
+  - Generate the full codebase implementing the above system.
+  - Include detailed docstrings and inline comments.
+  - Create the following deliverables:
+      1. `extract_landmarks.py` – Extract landmarks and save as `.npy` dataset.
+      2. `train_model.py` – Train small neural net and export `.tflite`.
+      3. `run_inference.py` – Real-time inference on Raspberry Pi camera.
+  - Include an optional quantization step in training script.
+  - Use concise and consistent function naming.
+  - Each file should be runnable independently.
+
+prompt_to_cursor:
+  "You are an expert ML engineer designing an efficient, production-ready sign language recognition system for Raspberry Pi 4B. Use the defined structure and rules above to implement all code components. Optimize for small footprint, real-time performance, and clear readability."
+✅ How to Use in Cursor
+Open Cursor IDE.
+Create a new workspace folder (e.g., sign-language-raspberrypi).
+Add this prompt to:
+either .cursor/rules (for persistent context),
+or paste it into Cursor’s “Custom Instruction” panel (left sidebar).
+Then ask Cursor:
+Generate all code files for this project based on the defined prompt.
+Cursor will automatically create:
+dataset_preparation/extract_landmarks.py
+training/train_model.py
+training/convert_to_tflite.py
+raspberry_pi_inference/run_inference.py
+labels.txt
+and any helper modules.
+Would you like me to include the Cursor-ready YAML + example extract_landmarks.py file content (so Cursor can bootstrap automatically when it reads the rule)?
+That version would let Cursor create the first file directly after parsing your .cursor/rules setup.
