@@ -1,5 +1,6 @@
 # Hand Gesture Recognition - Execution Guide
 
+## Install python 3.10
 ## Setup
 
 1. Install dependencies:
