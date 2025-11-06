@@ -1,0 +1,61 @@
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model files (keep only essential ones)
+*.h5
+*.hdf5
+*.keras
+*.pb
+*.ckpt*
+checkpoint
+
+# Training logs
+logs/
+runs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.bak
+*.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+._*
+
+
+
+# Coverage
+.coverage
+.pytest_cache/

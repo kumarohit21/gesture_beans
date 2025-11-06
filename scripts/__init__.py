@@ -1,0 +1,1 @@
+# Scripts for running hand gesture recognition
