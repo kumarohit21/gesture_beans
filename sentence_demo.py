@@ -39,12 +39,15 @@ def pre_process_landmark(landmark_list):
 def send_to_api(sentence):
     try:
         payload = {"title": "Message", "body": sentence}
+        print(f"[API] Sending request to http://172.16.248.252:3000/api/send-notification")
+        print(f"[API] Payload: {payload}")
         response = requests.post('http://172.16.248.252:3000/api/send-notification', 
                                json=payload,
                                timeout=5)
-        print(f"API Response: {response.status_code}")
+        print(f"[API] Response status: {response.status_code}")
+        print(f"[API] Response text: {response.text}")
     except Exception as e:
-        print(f"API Error: {e}")
+        print(f"[API] Error: {e}")
 
 def main():
     picam2 = Picamera2()
@@ -79,19 +82,23 @@ def main():
             recording = True
             recorded_gestures = []
             start_time = time.time()
-            print("Recording started...")
+            print(f"[RECORDING] Started at {time.strftime('%H:%M:%S')}")
+            print(f"[RECORDING] Will record for 10 seconds...")
         
         if recording:
             elapsed = time.time() - start_time
             if elapsed >= 10:
                 recording = False
+                print(f"[RECORDING] 10 seconds completed")
+                print(f"[RECORDING] Total gestures captured: {len(recorded_gestures)}")
+                print(f"[RECORDING] Raw gestures: {recorded_gestures}")
                 if recorded_gestures:
                     most_common = Counter(recorded_gestures).most_common()
                     sentence = ' '.join([gesture for gesture, _ in most_common])
-                    print(f"Recorded sentence: {sentence}")
+                    print(f"[RECORDING] Final sentence: {sentence}")
                     send_to_api(sentence)
                 else:
-                    print("No gestures recorded")
+                    print(f"[RECORDING] No gestures recorded")
             else:
                 cv.putText(debug_image, f"Recording: {10-int(elapsed)}s", (10, 60), 
                           cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
@@ -111,6 +118,7 @@ def main():
                 
                 if recording and gesture_text != "Unknown":
                     recorded_gestures.append(gesture_text)
+                    print(f"[GESTURE] Detected: {gesture_text} (Total: {len(recorded_gestures)})")
                 
                 mp.solutions.drawing_utils.draw_landmarks(debug_image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 cv.putText(debug_image, gesture_text, (10, 30), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
