@@ -93,15 +93,21 @@ def main():
                 print(f"[RECORDING] Total gestures captured: {len(recorded_gestures)}")
                 print(f"[RECORDING] Raw gestures: {recorded_gestures}")
                 if recorded_gestures:
-                    most_common = Counter(recorded_gestures).most_common()
-                    sentence = ' '.join([gesture for gesture, _ in most_common])
+                    # Create sentence from unique gestures in order of frequency
+                    gesture_counts = Counter(recorded_gestures)
+                    unique_gestures = [gesture for gesture, count in gesture_counts.most_common()]
+                    sentence = ' '.join(unique_gestures)
+                    print(f"[RECORDING] Gesture counts: {dict(gesture_counts)}")
                     print(f"[RECORDING] Final sentence: {sentence}")
                     send_to_api(sentence)
                 else:
                     print(f"[RECORDING] No gestures recorded")
             else:
-                cv.putText(debug_image, f"Recording: {10-int(elapsed)}s", (10, 60), 
+                remaining = 10 - int(elapsed)
+                cv.putText(debug_image, f"Recording: {remaining}s", (10, 60), 
                           cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                cv.putText(debug_image, f"Gestures: {len(recorded_gestures)}", (10, 90), 
+                          cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         image.flags.writeable = False
@@ -117,8 +123,14 @@ def main():
                 gesture_text = gesture_labels[hand_sign_id] if hand_sign_id < len(gesture_labels) else "Unknown"
                 
                 if recording and gesture_text != "Unknown":
-                    recorded_gestures.append(gesture_text)
-                    print(f"[GESTURE] Detected: {gesture_text} (Total: {len(recorded_gestures)})")
+                    # Only add if it's different from the last gesture to avoid spam
+                    if not recorded_gestures or recorded_gestures[-1] != gesture_text:
+                        recorded_gestures.append(gesture_text)
+                        print(f"[GESTURE] New gesture: {gesture_text} (Total unique: {len(set(recorded_gestures))})")
+                elif recording:
+                    # Still record Unknown to show activity
+                    if not recorded_gestures or recorded_gestures[-1] != "Unknown":
+                        print(f"[GESTURE] No clear gesture detected")
                 
                 mp.solutions.drawing_utils.draw_landmarks(debug_image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 cv.putText(debug_image, gesture_text, (10, 30), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
