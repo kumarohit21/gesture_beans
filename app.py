@@ -10,6 +10,7 @@ from collections import deque
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
+from picamera2 import Picamera2
 
 from utils import CvFpsCalc
 from model import KeyPointClassifier
@@ -53,9 +54,10 @@ def main():
     use_brect = True
 
     # Camera preparation ###############################################################
-    cap = cv.VideoCapture(cap_device)
-    cap.set(cv.CAP_PROP_FRAME_WIDTH, cap_width)
-    cap.set(cv.CAP_PROP_FRAME_HEIGHT, cap_height)
+    picam2 = Picamera2()
+    config = picam2.create_preview_configuration(main={"size": (cap_width, cap_height)})
+    picam2.configure(config)
+    picam2.start()
 
     # Model load #############################################################
     mp_hands = mp.solutions.hands
@@ -108,9 +110,8 @@ def main():
         number, mode = select_mode(key, mode)
 
         # Camera capture #####################################################
-        ret, image = cap.read()
-        if not ret:
-            break
+        image = picam2.capture_array()
+        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
         image = cv.flip(image, 1)  # Mirror display
         debug_image = copy.deepcopy(image)
 
@@ -175,7 +176,7 @@ def main():
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
 
-    cap.release()
+    picam2.stop()
     cv.destroyAllWindows()
 
 

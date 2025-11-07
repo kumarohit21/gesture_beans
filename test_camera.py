@@ -12,6 +12,7 @@ def main():
     
     while True:
         frame = picam2.capture_array()
+        frame = cv.cvtColor(frame, cv.COLOR_RGB2BGR)
         cv.imshow('Camera Test', frame)
         
         if cv.waitKey(1) & 0xFF == ord('q'):
