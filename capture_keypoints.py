@@ -62,7 +62,7 @@ def main():
     
     while True:
         image = picam2.capture_array()
-            
+        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
         image = cv.flip(image, 1)
         debug_image = copy.deepcopy(image)
         
