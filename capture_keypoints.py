@@ -5,6 +5,7 @@ import numpy as np
 import mediapipe as mp
 import itertools
 import copy
+from picamera2 import Picamera2
 
 def calc_landmark_list(image, landmarks):
     image_width, image_height = image.shape[1], image.shape[0]
@@ -33,9 +34,10 @@ def pre_process_landmark(landmark_list):
     return temp_landmark_list
 
 def main():
-    cap = cv.VideoCapture(0)
-    cap.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
-    cap.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
+    picam2 = Picamera2()
+    config = picam2.create_preview_configuration(main={"size": (1280, 720)})
+    picam2.configure(config)
+    picam2.start()
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5)
     
@@ -59,9 +61,7 @@ def main():
     
     
     while True:
-        ret, image = cap.read()
-        if not ret:
-            break
+        image = picam2.capture_array()
             
         image = cv.flip(image, 1)
         debug_image = copy.deepcopy(image)
@@ -102,7 +102,7 @@ def main():
         
         cv.imshow('Keypoint Capture', debug_image)
     
-    cap.release()
+    picam2.stop()
     cv.destroyAllWindows()
 
 if __name__ == '__main__':
