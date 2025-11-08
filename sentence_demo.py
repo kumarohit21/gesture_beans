@@ -56,7 +56,7 @@ def main():
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.8, min_tracking_confidence=0.9)
     
     keypoint_classifier = KeyPointClassifier()
-    gesture_labels = ['Help', 'Me', 'Call', 'fine', 'OK', 'unlock', 'lock', 'I', 'hello', 'bye']
+    gesture_labels = ['open', 'door', 'close', 'help', 'call', 'me', 'hello']
     
     print("Sentence Recording Demo")
     print("Press SPACE to start 10-second recording")

@@ -42,19 +42,16 @@ def main():
     csv_path = 'model/keypoint_classifier_new/keypoint.csv'
     
     print("Press 'k' to enter keypoint logging mode")
-    print("Press '0-9' to log keypoint with class ID")
+    print("Press '0-6' to log keypoint with class ID")
     print("Press 'ESC' to exit")
 
-    # 0 - Help
-    # 1 - Me
-    # 2 - Call
-    # 3 - fine
-    # 4 - OK
-    # 5 - unlock
-    # 6 - lock
-    # 7 - I
-    # 8 - hello
-    # 9 - bye
+    # 0 - open
+    # 1 - door
+    # 2 - close
+    # 3 - help
+    # 4 - call
+    # 5 - me
+    # 6 - hello
     
     
     while True:
@@ -73,7 +70,7 @@ def main():
             mode = 0
         
         number = -1
-        if 48 <= key <= 57:  # 0-9
+        if 48 <= key <= 54:  # 0-6
             number = key - 48
         
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -87,7 +84,7 @@ def main():
                 pre_processed_landmark_list = pre_process_landmark(landmark_list)
                 hand_label = handedness.classification[0].label
                 
-                if mode == 1 and (0 <= number <= 9):
+                if mode == 1 and (0 <= number <= 6):
                     with open(csv_path, 'a', newline="") as f:
                         writer = csv.writer(f)
                         writer.writerow([number, *pre_processed_landmark_list])

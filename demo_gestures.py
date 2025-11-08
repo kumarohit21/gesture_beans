@@ -42,7 +42,7 @@ def main():
     keypoint_classifier = KeyPointClassifier()
     
     # Gesture labels
-    gesture_labels = ['Help', 'Me', 'Call', 'fine', 'OK', 'unlock', 'lock', 'I', 'hello', 'bye']
+    gesture_labels = ['open', 'door', 'close', 'help', 'call', 'me', 'hello']
     
     print("Gesture Recognition Demo")
     print("Available gestures:", ', '.join(gesture_labels))
