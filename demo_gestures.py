@@ -4,7 +4,7 @@ import numpy as np
 import mediapipe as mp
 import copy
 import itertools
-from picamera2 import Picamera2
+from utils.camera import CameraCapture
 from model.keypoint_classifier.keypoint_classifier import KeyPointClassifier
 
 def calc_landmark_list(image, landmarks):
@@ -34,10 +34,7 @@ def pre_process_landmark(landmark_list):
     return temp_landmark_list
 
 def main():
-    picam2 = Picamera2()
-    config = picam2.create_preview_configuration(main={"size": (1280, 720)})
-    picam2.configure(config)
-    picam2.start()
+    camera = CameraCapture(1280, 720)
     
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.8, min_tracking_confidence=0.9)
@@ -52,8 +49,9 @@ def main():
     print("Press ESC to exit")
     
     while True:
-        image = picam2.capture_array()
-        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
+        ret, image = camera.read()
+        if not ret:
+            break
         image = cv.flip(image, 1)
         debug_image = copy.deepcopy(image)
         
@@ -85,7 +83,7 @@ def main():
         
         cv.imshow('Gesture Recognition Demo', debug_image)
     
-    picam2.stop()
+    camera.release()
     cv.destroyAllWindows()
 
 if __name__ == '__main__':
