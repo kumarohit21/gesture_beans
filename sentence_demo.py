@@ -39,9 +39,9 @@ def pre_process_landmark(landmark_list):
 def send_to_api(sentence):
     try:
         payload = {"title": "Message", "body": sentence}
-        print(f"[API] Sending request to http://172.16.248.252:3000/api/send-notification")
+        print(f"[API] Sending request to http://192.168.1.3:3000/api/send-notification")
         print(f"[API] Payload: {payload}")
-        response = requests.post('http://172.16.248.252:3000/api/send-notification', 
+        response = requests.post('http://192.168.1.3:3000/api/send-notification', 
                                json=payload,
                                timeout=5)
         print(f"[API] Response status: {response.status_code}")
