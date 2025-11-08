@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 # Configuration
 RANDOM_SEED = 42
-NUM_CLASSES = 10
+NUM_CLASSES = 7
 dataset = 'model/keypoint_classifier_new/keypoint.csv'
 model_save_path = 'model/keypoint_classifier_new/keypoint_classifier.keras'
 tflite_save_path = 'model/keypoint_classifier_new/keypoint_classifier.tflite'
@@ -31,7 +31,7 @@ except:
 X_train, X_test, y_train, y_test = train_test_split(X_dataset, y_dataset, train_size=0.75, random_state=RANDOM_SEED)
 
 # Build model for dual hand keypoints
-num_classes = 10
+num_classes = 7
 model = tf.keras.models.Sequential([
     tf.keras.layers.Input((42,)),
     tf.keras.layers.Dropout(0.2),

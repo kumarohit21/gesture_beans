@@ -26,13 +26,13 @@ def create_model(num_classes=3):
 def train_model():
     """Train the keypoint classification model"""
     # Load dataset
-    X_dataset, y_dataset = load_dataset('model/keypoint_classifier/keypoint.csv')
+    X_dataset, y_dataset = load_dataset('model/keypoint_classifier_new/keypoint.csv')
     
     # Split dataset
     X_train, X_test, y_train, y_test = train_test_split(X_dataset, y_dataset, train_size=0.75, random_state=42)
     
-    # Create and compile model
-    model = create_model(num_classes=len(np.unique(y_dataset)))
+    # Create and compile model (7 classes for new gestures)
+    model = create_model(num_classes=7)
     model.compile(
         optimizer='adam',
         loss='sparse_categorical_crossentropy',
@@ -48,7 +48,7 @@ def train_model():
     )
     
     # Save model
-    model.save('model/keypoint_classifier/keypoint_classifier.hdf5')
+    model.save('model/keypoint_classifier_new/keypoint_classifier.hdf5')
     
     # Convert to TFLite
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
@@ -58,7 +58,7 @@ def train_model():
     with open('model/keypoint_classifier_new/keypoint_classifier.tflite', 'wb') as f:
         f.write(tflite_quantized_model)
     
-    print("Model training completed and saved!")
+    print("Model training completed and saved for 7 gesture classes!")
 
 if __name__ == '__main__':
     train_model()
